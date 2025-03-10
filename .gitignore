@@ -1,0 +1,62 @@
+# Exclude build artifacts
+/build/
+/sdkconfig
+/sdkconfig.old
+/CMakeCache.txt
+/cmake-build-debug/
+/*.cmake
+/esp-idf/
+*.elf
+*.bin
+*.map
+*.hex
+*.log
+*.dump
+
+# Exclude IDF components and dependencies
+/components/*/build/
+/managed_components/
+
+# Ignore compiled Python files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Ignore VS Code files
+.vscode/
+*.code-workspace
+
+# Ignore CLion and CMake files
+.idea/
+/cmake-build-*/
+
+# Ignore Eclipse project files
+.cproject
+.project
+.settings/
+
+# Ignore ESP-IDF tools
+/.espressif/
+/dist/
+.env
+export.sh
+export.bat
+export.ps1
+
+# Ignore Flash files
+flash_*.bin
+
+# Ignore debugging and logs
+*.log
+*.bak
+*.swp
+*.swo
+
+# Ignore temporary files
+*~
+.DS_Store
+Thumbs.db
+
+# Ignore git submodules (if using)
+.gitmodules
