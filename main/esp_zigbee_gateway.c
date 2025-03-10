@@ -65,12 +65,13 @@ static void bdb_start_top_level_commissioning_cb(uint8_t mode_mask)
 
 void esp_zb_app_signal_handler(esp_zb_app_signal_t *signal_struct)
 {
-    uint32_t *p_sg_p       = signal_struct->p_app_signal;
+    uint32_t *p_sg_p = signal_struct->p_app_signal;
     esp_err_t err_status = signal_struct->esp_err_status;
     esp_zb_app_signal_type_t sig_type = *p_sg_p;
     esp_zb_zdo_signal_device_annce_params_t *dev_annce_params = NULL;
 
-    switch (sig_type) {
+    switch (sig_type)
+    {
     case ESP_ZB_ZDO_SIGNAL_SKIP_STARTUP:
 #if CONFIG_EXAMPLE_CONNECT_WIFI
 #if CONFIG_ESP_COEX_SW_COEXIST_ENABLE
@@ -84,21 +85,28 @@ void esp_zb_app_signal_handler(esp_zb_app_signal_t *signal_struct)
         break;
     case ESP_ZB_BDB_SIGNAL_DEVICE_FIRST_START:
     case ESP_ZB_BDB_SIGNAL_DEVICE_REBOOT:
-        if (err_status == ESP_OK) {
+        if (err_status == ESP_OK)
+        {
             ESP_LOGI(TAG, "Device started up in %s factory-reset mode", esp_zb_bdb_is_factory_new() ? "" : "non");
-            if (esp_zb_bdb_is_factory_new()) {
+            if (esp_zb_bdb_is_factory_new())
+            {
                 ESP_LOGI(TAG, "Start network formation");
                 esp_zb_bdb_start_top_level_commissioning(ESP_ZB_BDB_MODE_NETWORK_FORMATION);
-            } else {
+            }
+            else
+            {
                 esp_zb_bdb_open_network(180);
                 ESP_LOGI(TAG, "Device rebooted");
             }
-        } else {
+        }
+        else
+        {
             ESP_LOGE(TAG, "Failed to initialize Zigbee stack (status: %s)", esp_err_to_name(err_status));
         }
         break;
     case ESP_ZB_BDB_SIGNAL_FORMATION:
-        if (err_status == ESP_OK) {
+        if (err_status == ESP_OK)
+        {
             esp_zb_ieee_addr_t ieee_address;
             esp_zb_get_long_address(ieee_address);
             ESP_LOGI(TAG, "Formed network successfully (Extended PAN ID: %02x:%02x:%02x:%02x:%02x:%02x:%02x:%02x, PAN ID: 0x%04hx, Channel:%d, Short Address: 0x%04hx)",
@@ -106,13 +114,16 @@ void esp_zb_app_signal_handler(esp_zb_app_signal_t *signal_struct)
                      ieee_address[3], ieee_address[2], ieee_address[1], ieee_address[0],
                      esp_zb_get_pan_id(), esp_zb_get_current_channel(), esp_zb_get_short_address());
             esp_zb_bdb_start_top_level_commissioning(ESP_ZB_BDB_MODE_NETWORK_STEERING);
-        } else {
+        }
+        else
+        {
             ESP_LOGI(TAG, "Restart network formation (status: %s)", esp_err_to_name(err_status));
             esp_zb_scheduler_alarm((esp_zb_callback_t)bdb_start_top_level_commissioning_cb, ESP_ZB_BDB_MODE_NETWORK_FORMATION, 1000);
         }
         break;
     case ESP_ZB_BDB_SIGNAL_STEERING:
-        if (err_status == ESP_OK) {
+        if (err_status == ESP_OK)
+        {
             ESP_LOGI(TAG, "Network steering started");
         }
         break;
@@ -121,10 +132,14 @@ void esp_zb_app_signal_handler(esp_zb_app_signal_t *signal_struct)
         ESP_LOGI(TAG, "New device commissioned or rejoined (short: 0x%04hx)", dev_annce_params->device_short_addr);
         break;
     case ESP_ZB_NWK_SIGNAL_PERMIT_JOIN_STATUS:
-        if (err_status == ESP_OK) {
-            if (*(uint8_t *)esp_zb_app_signal_get_params(p_sg_p)) {
+        if (err_status == ESP_OK)
+        {
+            if (*(uint8_t *)esp_zb_app_signal_get_params(p_sg_p))
+            {
                 ESP_LOGI(TAG, "Network(0x%04hx) is open for %d seconds", esp_zb_get_pan_id(), *(uint8_t *)esp_zb_app_signal_get_params(p_sg_p));
-            } else {
+            }
+            else
+            {
                 ESP_LOGW(TAG, "Network(0x%04hx) closed, devices joining not allowed.", esp_zb_get_pan_id());
             }
         }
